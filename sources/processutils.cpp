@@ -78,6 +78,14 @@ QString ProcessUtils::jadxExe()
     return (!exe.isEmpty() && QFile::exists(exe)) ? exe : QString();
 }
 
+QString ProcessUtils::cfrJar()
+{
+    QSettings settings;
+    QString jar = settings.value("cfr_jar").toString();
+    return (!jar.isEmpty() && QFile::exists(jar)) ? jar : QString();
+}
+
+
 QString ProcessUtils::javaExe()
 {
     QSettings settings;

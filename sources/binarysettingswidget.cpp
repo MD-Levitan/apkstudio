@@ -69,6 +69,15 @@ QLayout *BinarySettingsWidget::buildForm()
     label->setTextInteractionFlags(Qt::TextBrowserInteraction);
     label->setTextFormat(Qt::RichText);
     layout->addRow("", child);
+    layout->addRow(tr("CFR"), m_EditCfrExe = new QLineEdit(this));
+    child = new QHBoxLayout();
+    child->addWidget(button = new QPushButton(tr("Browse"), this));
+    connect(button, &QPushButton::pressed, this, &BinarySettingsWidget::handleBrowseCfr);
+    child->addWidget(label = new QLabel(QString("<a href=\"https://github.com/leibnitz27/cfr/releases\">%1</a>").arg(tr("Get it here!")), this), 1);
+    label->setOpenExternalLinks(true);
+    label->setTextInteractionFlags(Qt::TextBrowserInteraction);
+    label->setTextFormat(Qt::RichText);
+    layout->addRow("", child);
     QSettings settings;
     auto adb = settings.value("adb_exe").toString();
     if (adb.isEmpty()) {
@@ -86,6 +95,7 @@ QLayout *BinarySettingsWidget::buildForm()
         m_EditJavaExe->setText(java);
     }
     m_EditUberApkSignerJar->setText(settings.value("uas_jar").toString());
+    m_EditCfrExe->setText(settings.value("cfr_jar").toString());
     m_SpinJavaHeap->setValue(ProcessUtils::javaHeapSize());
     return layout;
 }
@@ -166,6 +176,18 @@ void BinarySettingsWidget::handleBrowseUberApkSigner()
     }
 }
 
+void BinarySettingsWidget::handleBrowseCfr()
+{
+    const QString path = QFileDialog::getOpenFileName(this,
+                                                      tr("Browse cfr (cfr.jar)"),
+                                                      m_EditCfrExe->text(),
+                                                      tr("JAR File(s) (*.jar)"));
+    if (!path.isEmpty()) {
+        m_EditCfrExe->setText(QDir::toNativeSeparators(path));
+    }
+}
+
+
 void BinarySettingsWidget::save()
 {
     QSettings settings;
@@ -175,5 +197,6 @@ void BinarySettingsWidget::save()
     settings.setValue("java_exe", m_EditJavaExe->text());
     settings.setValue("java_heap", m_SpinJavaHeap->value());
     settings.setValue("uas_jar", m_EditUberApkSignerJar->text());
+    settings.setValue("cfr_jar", m_EditCfrExe->text());
     settings.sync();
 }

@@ -184,7 +184,7 @@ QDockWidget *MainWindow::buildFilesDock()
 
 QToolBar *MainWindow::buildMainToolBar()
 {
-    auto toolbar = new QToolBar(this);
+    auto toolbar = new QToolBar("Tools", this);
     toolbar->addAction(QIcon(":/icons/icons8/icons8-android-os-48.png"), tr("Open APK"), this, &MainWindow::handleActionApk);
     toolbar->addAction(QIcon(":/icons/icons8/icons8-folder-48.png"), tr("Open Folder"), this, &MainWindow::handleActionFolder);
     toolbar->addSeparator();
@@ -313,6 +313,8 @@ QStatusBar *MainWindow::buildStatusBar(const QMap<QString, QString> &versions)
     statusbar->addPermanentWidget(new QLabel(tr("ADB").append(": ").append(versions["adb"]), this));
     statusbar->addPermanentWidget(buildSeparator());
     statusbar->addPermanentWidget(new QLabel(tr("Uber APK Signer").append(": ").append(versions["uas"]), this));
+    statusbar->addPermanentWidget(buildSeparator());
+    statusbar->addPermanentWidget(new QLabel(tr("CFR").append(": ").append(versions["cfr"]), this));
     statusbar->addPermanentWidget(new QWidget(this), 1);
     statusbar->addPermanentWidget(m_StatusCursor = new QLabel("0:0", this));
     statusbar->addPermanentWidget(buildSeparator());

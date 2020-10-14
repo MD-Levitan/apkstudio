@@ -34,6 +34,7 @@ public:
     static QString findInPath(const QString &exe);
     static QString jadxExe();
     static QString javaExe();
+    static QString cfrJar();
     static int javaHeapSize();
     static QString uberApkSignerJar();
     static ProcessResult runCommand(const QString &exe, const QStringList &args = QStringList(), const int timeout = PROCESS_TIMEOUT_SECS);

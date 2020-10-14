@@ -221,6 +221,11 @@ void SourceCodeEdit::keyPressEvent(QKeyEvent *event)
 {
     QTextCursor cursor = textCursor();
     switch (event->key()) {
+    case Qt::Key_F1:{
+            QTextCursor cursor = textCursor();
+            cursor.insertText("Test");
+            break;
+    }
     case Qt::Key_Backtab:
     case Qt::Key_Tab: {
         bool forward = !QApplication::keyboardModifiers().testFlag(Qt::ShiftModifier);

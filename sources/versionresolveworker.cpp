@@ -6,6 +6,7 @@
 #define REGEXP_ADB_VERSION "version (\\d+\\.\\d+\\.\\d+)$"
 #define REGEXP_JAVA_VERSION "version \"([\\d._]+)\""
 #define REGEXP_UAS_VERSION "Version: (\\d+\\.\\d+\\.\\d+)$"
+#define REGEXP_CFR_VERSION "CFR (\\d+\\.\\d+)$"
 
 VersionResolveWorker::VersionResolveWorker(QObject *parent)
     : QObject(parent)
@@ -136,6 +137,31 @@ void VersionResolveWorker::resolve()
         }
         if (!found) {
             emit versionResolved("uas", QString());
+        }
+    }
+    found = false;
+    const QString cfr = ProcessUtils::cfrJar();
+    if (!java.isEmpty() && !cfr.isEmpty()) {
+        QStringList args;
+        args << "-jar" << cfr;
+        args << "--help";
+        ProcessResult result = ProcessUtils::runCommand(java, args);
+#ifdef QT_DEBUG
+        qDebug() << "CFR returned code" << result.code;
+#endif
+        if ((result.code == 0) && !result.output.isEmpty()) {
+#ifdef QT_DEBUG
+            qDebug() << "CFR returned" << result.output.first();
+#endif
+            QRegularExpression regexp(REGEXP_CFR_VERSION);
+            QRegularExpressionMatch match = regexp.match(result.output.first());
+            if (match.hasMatch()) {
+                emit versionResolved("cfr", match.captured(1));
+                found = true;
+            }
+        }
+        if (!found) {
+            emit versionResolved("cfr", QString());
         }
     }
     emit finished();
